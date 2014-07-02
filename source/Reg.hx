@@ -9,6 +9,12 @@ import flixel.util.FlxSave;
  */
 class Reg
 {
+      public static var rowSpace:Int = 10;
+      public static var columnSpace:Int = 10;
+
+
+
+
 	/**
 	 * Generic levels Array that can be used for cross-state stuff.
 	 * Example usage: Storing the levels of a platformer.

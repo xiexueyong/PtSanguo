@@ -12,7 +12,7 @@ import flixel.util.loaders.TextureAtlasFrame;
  * User: gaoyun
  * Date: 14-5-27
  * Time: 下午3:01
- * description：重写TexturePackerData        改动 1。
+ * description：重写TexturePackerData        改动 1:重写了parseData方法为了适应读取资源 2:销毁方法没有内容
  *
  * */
 
@@ -77,6 +77,7 @@ class PTTexturePackerData extends TexturePackerData{
 	 */
     override public function destroy():Void
     {
+        super.destroy();
     }
 
 }

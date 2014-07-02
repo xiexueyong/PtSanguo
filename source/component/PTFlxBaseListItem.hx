@@ -12,7 +12,7 @@ import flixel.text.FlxText;
 import flash.system.System;
 import flixel.tweens.FlxTween;
 
-class PTFlxBaseListItem extends FlxUIGroup implements ICursorPointable{
+class PTFlxBaseListItem extends PTFlxUIGroup implements ICursorPointable{
 
     private var _data:Dynamic;
     private static var index:Int = 1;

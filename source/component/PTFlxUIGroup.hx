@@ -10,17 +10,17 @@ import flixel.ui.FlxButton;
 /**
  * @author Lars Doucet
  */
-class PTFlxUIGroup extends FlxUIGroup implements IFlxUIClickable implements IHasParams
-{
+        class PTFlxUIGroup extends FlxUIGroup implements IFlxUIClickable implements IHasParams
+        {
+        public var button:PTFlxUIButton;
+        public var params(default, set):Array<Dynamic>;
+        public var skipButtonUpdate(default, set):Bool = false;
+        public var callback:Void->Void;
+        private var _dirty:Bool;
 
-    public var button:FlxUIButton;
-    public var params(default, set):Array<Dynamic>;
-    public var skipButtonUpdate(default, set):Bool = false;
-    public var callback:Void->Void;
+        public static inline var CLICK_EVENT:String = "click_PTFlxUIGroup";
 
-    public static inline var CLICK_EVENT:String = "click_PTFlxUIGroup";
-
-    private function set_skipButtonUpdate(b:Bool):Bool {
+        private function set_skipButtonUpdate(b:Bool):Bool {
         skipButtonUpdate = b;
         button.skipButtonUpdate = skipButtonUpdate;
         return skipButtonUpdate;
@@ -34,32 +34,30 @@ class PTFlxUIGroup extends FlxUIGroup implements IFlxUIClickable implements IHas
         return params;
     }
 
-    public function new(X:Float = 0, Y:Float = 0 ?Params:Array<Dynamic>，?Callback:Void->Void)
+    public function new(X:Float = 0,Y:Float = 0,?Params:Array<Dynamic>,?Callback:Void->Void)
     {
-        super();
-
+        super(X,Y);
+        _dirty = true;
         callback = Callback;
         params = Params;
-        button = new FlxUIButton(0, 0, null, _clickCheck);
-
+        button = new PTFlxUIButton(0, 0, null, _clickCheck);
         //set default checkbox label format
-        button.up_color = 0xffffff;
-        button.down_color = 0xffffff;
-        button.over_color = 0xffffff;
-        button.up_toggle_color = 0xffffff;
-        button.down_toggle_color = 0xffffff;
-        button.over_toggle_color = 0xffffff;
-
+//        button.up_color = 0xffffff;
+//        button.down_color = 0xffffff;
+//        button.over_color = 0xffffff;
+//        button.up_toggle_color = 0xffffff;
+//        button.down_toggle_color = 0xffffff;
+//        button.over_toggle_color = 0xffffff;
 //        button.loadGraphicsUpOverDown();
+//set all these to 0
+//        button.labelOffsets[FlxButton.NORMAL].x = 0;
+//        button.labelOffsets[FlxButton.NORMAL].y = 0;
+//        button.labelOffsets[FlxButton.PRESSED].x = 0;
+//        button.labelOffsets[FlxButton.PRESSED].y = 0;
+//        button.labelOffsets[FlxButton.HIGHLIGHT].x = 0;
+//        button.labelOffsets[FlxButton.HIGHLIGHT].y = 0;
         button.onUp.callback = _clickCheck;    //for internal use, check/uncheck box, bubbles up to _externalCallback
         add(button);
-//set all these to 0
-        button.labelOffsets[FlxButton.NORMAL].x = 0;
-        button.labelOffsets[FlxButton.NORMAL].y = 0;
-        button.labelOffsets[FlxButton.PRESSED].x = 0;
-        button.labelOffsets[FlxButton.PRESSED].y = 0;
-        button.labelOffsets[FlxButton.HIGHLIGHT].x = 0;
-        button.labelOffsets[FlxButton.HIGHLIGHT].y = 0;
 
         x = X;
         y = Y;
@@ -67,7 +65,7 @@ class PTFlxUIGroup extends FlxUIGroup implements IFlxUIClickable implements IHas
 
     private override function set_visible(Value:Bool):Bool
     {
-//don't cascade to my members
+        //don't cascade to my members
         visible = Value;
         return visible;
     }
@@ -83,23 +81,21 @@ class PTFlxUIGroup extends FlxUIGroup implements IFlxUIClickable implements IHas
 
     public override function update():Void{
         super.update();
-////更新按钮的宽高
+    //更新按钮的宽高
 //        if (_dirty) {
-//            button.width = ?;
+//            button.width = this.width;
 //            _dirty = false;
 //        }
     }
 
-/*****PRIVATE******/
-
+    /*****PRIVATE******/
     private function _clickCheck():Void
     {
-        checked = !checked;
         if (callback != null) {
             callback();
         }
         if(broadcastToFlxUI){
-            FlxUI.event(CLICK_EVENT, this, checked, params);
+            FlxUI.event(CLICK_EVENT, this, null, params);
         }
     }
 
