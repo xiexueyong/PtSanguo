@@ -10,17 +10,18 @@ import flixel.ui.FlxButton;
 /**
  * @author Lars Doucet
  */
-        class PTFlxUIGroup extends FlxUIGroup implements IFlxUIClickable implements IHasParams
-        {
-        public var button:PTFlxUIButton;
-        public var params(default, set):Array<Dynamic>;
-        public var skipButtonUpdate(default, set):Bool = false;
-        public var callback:Void->Void;
-        private var _dirty:Bool;
+class PTFlxUIGroup extends FlxUIGroup implements IFlxUIClickable implements IHasParams
+{
+    public var button:PTFlxUIButton;
+    public var params(default, set):Array<Dynamic>;
+    public var data(default, set):Dynamic;
+    public var skipButtonUpdate(default, set):Bool = false;
+    public var callback:Void->Void;
+    private var _dirty:Bool;
 
-        public static inline var CLICK_EVENT:String = "click_PTFlxUIGroup";
+    public static inline var CLICK_EVENT:String = "click_PTFlxUIGroup";
 
-        private function set_skipButtonUpdate(b:Bool):Bool {
+    private function set_skipButtonUpdate(b:Bool):Bool {
         skipButtonUpdate = b;
         button.skipButtonUpdate = skipButtonUpdate;
         return skipButtonUpdate;
@@ -33,12 +34,17 @@ import flixel.ui.FlxButton;
         }
         return params;
     }
+    private function set_data(d:Dynamic):Dynamic{
+        data = d;
+        return data;
+    }
 
-    public function new(X:Float = 0,Y:Float = 0,?Params:Array<Dynamic>,?Callback:Void->Void)
+    public function new(X:Float = 0,Y:Float = 0,?Data:Dynamic,?Params:Array<Dynamic>,?Callback:Void->Void)
     {
         super(X,Y);
         _dirty = true;
         callback = Callback;
+        data = Data;
         params = Params;
         button = new PTFlxUIButton(0, 0, null, _clickCheck);
         //set default checkbox label format
@@ -95,7 +101,7 @@ import flixel.ui.FlxButton;
             callback();
         }
         if(broadcastToFlxUI){
-            FlxUI.event(CLICK_EVENT, this, null, params);
+            FlxUI.event(CLICK_EVENT, this, data, params);
         }
     }
 
