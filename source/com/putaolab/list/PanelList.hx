@@ -52,7 +52,6 @@ class PanelList extends PTFlxUIGroup{
         }else{
             _currentItemArr = _itemArr.slice(_pageIndex*len,_itemArr.length);
         }
-        trace(_currentItemArr.length);
 
         for(i in 0..._column){
             for(j in 0..._row){

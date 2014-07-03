@@ -14,8 +14,8 @@ class BaseItem extends PTFlxUIGroup{
     public var type:String;
 
 
-    public function new(X:Float = 0,Y:Float = 0,?Params:Array<Dynamic>,?Callback:Void->Void) {
-        super(X,Y,Params,Callback);
+    public function new(X:Float = 0,Y:Float = 0,?data:Dynamic,?Params:Array<Dynamic>,?Callback:Void->Void) {
+        super(X,Y,data,Params,Callback);
     }
 
 }

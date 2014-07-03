@@ -12,6 +12,9 @@ class TextPackerConfig {
     public var urlStr:String;
     public var urlPng:String;
 
+
     public function new() {
     }
+
+
 }
