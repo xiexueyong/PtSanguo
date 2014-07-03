@@ -1,17 +1,15 @@
 package battle.charater;
 
-import Math;
-import Math;
 import flixel.group.FlxSpriteGroup;
-import flixel.group.FlxTypedGroup;
-import Array;
-class Troops extends FlxSpriteGroup{
+
+
+class Troop extends FlxSpriteGroup{
     public var general:General;
     public var soliders:Array<Solider>;
     public var units:Array<Solider>;
     public var id:Int;
     public var type:Int;
-    public var target:Troops;
+    public var target:Troop;
 
     public function new(id:Int,type:Int) {
         super();
@@ -19,36 +17,13 @@ class Troops extends FlxSpriteGroup{
         this.type = type;
         //初始化军队
         units = new Array<Solider>();
-
-        general = new General();
-        general.x  =130;
-        general.y  =130;
-        units.push(general);
-        add(general);
-        soliders = new Array<Solider>();
-
-        var count:Int = 0;
-        if(id == 1){
-            count = 10;
-        }else{
-            count = 20;
-        }
-        for(i in 0...count){
-            var s:Solider = new Solider();
-            soliders.push(s);
-            units.push(s);
-            add(s);
-            if(i % 2 == 0){
-                s.x = 0;
-            }else{
-                s.x = 60;
-            }
-            s.y = i/2 * 60;
-        }
+        initSolider();
+    }
+    private function initSolider():Void{
 
     }
     private static var V:Float = 200;
-    public function setAttackTarget(troop:Troops):Void{
+    public function setAttackTarget(troop:Troop):Void{
         this.target = troop;
         attackTarget();
     }
@@ -90,33 +65,54 @@ class Troops extends FlxSpriteGroup{
     private inline function attackBack(solider1:Solider,solider2:Solider):Void{
         solider1.attack(solider2,false);
     }
-    private function checkSoliderOpponent():Void{
+    private inline function checkSoliderOpponent():Void{
         for(i in 0...units.length){
-            if(units[i].toAttack == null){
+            if(units[i].attackTarget == null){
                 lookForOpponent(units[i]);
             }
         }
+    }
+    /*检查士兵是否死亡*/
+    private inline function checkSoliderStatus():Void{
+        var j:Int = 0;
+        for(i in 0...units.length){
+            if(j >= units.length){
+                break;
+            }
+            if(units[j].dead){
+                removeSolider(units[j]);
+                j--;
+            }
+            j++;
+        }
 
     }
-    private function lookForOpponent(solider:Solider):Solider{
+    /*清除一个士兵*/
+    private inline function removeSolider(solider:Solider):Void{
+        units.remove(solider);
+        remove(solider);
+    }
+    private function lookForOpponent(solider:Solider):Void{
         if(target != null){
             var units:Array<Solider> = target.units;
             for(i in 0...units.length){
-                if(units[i].beAttacked.length == 1){
+                if(units[i].guyAttackMe != null && units[i].guyAttackMe.front == null){
                     attackFaceToFace(solider,units[i]);
-                }else if(units[i].beAttacked.length == 2){
+                    return;
+                }
+            }
+            for(i in 0...units.length){
+                if(units[i].guyAttackMe != null && units[i].guyAttackMe.back == null){
                     attackBack(solider,units[i]);
+                    return;
                 }
             }
         }
-
-
 
     }
     override public function update():Void{
         super.update();
         checkSoliderOpponent();
-
-
+        checkSoliderStatus();
     }
 }

@@ -1,5 +1,7 @@
 package manager;
 
+import Array;
+import Array;
 import component.PTTexturePackerData;
 import flixel.interfaces.IFlxDestroyable;
 import flixel.util.loaders.TexturePackerData;
@@ -59,11 +61,14 @@ class AssetsManager{
         return sp;
     }
 
-     public function uploadAnimationToSprite(sprite:FlxSprite,Ani_Key:String,Ani_Name:String,FrameRate:Int = 30, Looped:Bool = true,xmlName:String):Void
+     public function uploadAnimationToSprite(sprite:FlxSprite,animationNames:Array<String>,prefixs:Array<String>,FrameRate:Int = 30, Looped:Bool = true,xmlName:String):Void
      {
          getTextPackerData(xmlName);
          sprite.loadGraphicFromTexture(_currentTextPackerData);
-         sprite.animation.addByPrefix(Ani_Key,Ani_Name,FrameRate,Looped);
+         for(i in 0...animationNames.length){
+             sprite.animation.addByPrefix(animationNames[i],prefixs[i],FrameRate,Looped);
+         }
+
      }
 
     public function uploadTextureToSprite(sprite:FlxSprite,name:String,xmlName:String):Void
@@ -79,6 +84,7 @@ class AssetsManager{
         if(_currentTextPackerData == null){
 //            setSparrowData();//如果为空怎么处理
         }
+//        trace(_currentTextPackerData);
         return _currentTextPackerData;
     }
 

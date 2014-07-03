@@ -1,5 +1,7 @@
 package manager;
 
+import com.putaolab.BagPanel;
+import com.putaolab.BasePanel;
 import flixel.addons.ui.FlxUISubState;
 import flixel.addons.ui.FlxUIState;
 import flixel.FlxG;
@@ -11,64 +13,83 @@ import flixel.FlxG;
  */
 
 class UIManager {
-    private static var uiManager:UIManager;
-    private var currentState:FlxUIState;
-    private var currentSubState:FlxUISubState;
-    private var subStateArr:Array<FlxUISubState>;
+    private static var _uiManager:UIManager;
+    private var _currentState:FlxUIState;
+    private var _currentSubState:FlxUISubState;
+    private var _subStates:Array<FlxUISubState>;
+
+
 
     private function new() {
-        subStateArr = new Array<FlxUISubState>();
+        _subStates = new Array<FlxUISubState>();
     }
     public static function getInstance():UIManager{
-        if(uiManager==null){
-            uiManager = new UIManager();
+        if(_uiManager==null){
+            _uiManager = new UIManager();
         }
-        return uiManager;
+        return _uiManager;
     }
 
 
     public function switchState(state:FlxUIState):Void{
-        if(currentState != null){
-            currentState.destroy();
-            currentState = null;
+        if(_currentState != null){
+            _currentState.destroy();
+            _currentState = null;
         }
-        currentState = state;
-        FlxG.switchState(currentState);
+        _currentState = state;
+        FlxG.switchState(_currentState);
     }
 
     public function openSubState(subState:FlxUISubState,?state:FlxUIState):Void{
-        if(currentState == null){
-            currentState = state;
+        if(_currentState == null){
+            _currentState = state;
         }
-//        hiddenSubState();
-        subStateArr.push(subState);
-        currentSubState = subState;
-        currentState.openSubState(currentSubState);
-        trace("openSubState :"+subStateArr.length);
+        _subStates.push(subState);
+        _currentSubState = subState;
+        _currentState.openSubState(_currentSubState);
     }
-
-    //除了最新弹出的substate，隐藏其他substate.
-    private function hiddenSubState():Void{
-        if(subStateArr == null || subStateArr.length == 0){
+    public function openSubState(name:String,?state:FlxUIState):Void{
+        if(_currentState == null){
+            _currentState = state;
+        }
+        var panel:BasePanel = getPanel(name);
+        if(panel == null)
             return;
+
+        _subStates.push(panel);
+        _currentSubState = panel;
+        _currentState.openSubState(_currentSubState);
+    }
+    private function getPanel(name:String):BasePanel{
+        if(name == "bag"){
+            return new BagPanel();
         }
-        for(i in 0...subStateArr.length){
-            subStateArr[i];
+        return null;
+
+    }
+
+
+    public function closeSubState(all:Bool = false):Void{
+        if(_subStates.length > 0){
+            if(all){
+                while(_subStates.length > 0){
+                    var closedSubState:FlxUISubState = _subStates.pop();
+                    closedSubState.close();
+                }
+            }else{
+                var closedSubState:FlxUISubState = _subStates.pop();
+                closedSubState.close();
+            }
         }
-        trace(subStateArr.length);
-    }
-
-    public function closeSubState():Void{
-        var closedSubState:FlxUISubState = subStateArr.shift();
-        closedSubState.close();
-//        if(subStateArr.length>0){//如果还有substate，弹出来。
-//            trace(subStateArr[subStateArr.length-1]);
-//            currentState.openSubState(subStateArr[subStateArr.length-1]);
-//        }
-    }
-
-
-    public function center():Void{
 
     }
+    public function update():Void{
+        #if android
+        if (FlxG.android.anyJustPressed(["BACK"])){
+            closeSubState();
+        }
+        #end
+    }
+
+
 }

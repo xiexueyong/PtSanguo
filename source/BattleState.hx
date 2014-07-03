@@ -1,6 +1,9 @@
 package;
 
-import battle.charater.Troops;
+import battle.charater.TroopLeft;
+import battle.charater.TroopRight;
+import manager.AssetsManager;
+import battle.charater.Troop;
 import battle.map.Level;
 import flixel.FlxState;
 import battle.map.Level;
@@ -9,11 +12,14 @@ import battle.map.Level;
 class BattleState extends FlxState
 {
     public var level:Level;
-    private var troopLeft:Troops;
-    private var troopRight:Troops;
+    private var troopLeft:Troop;
+    private var troopRight:Troop;
 
 	override public function create():Void
 	{
+        AssetsManager.getInstance().setSparrowData("jibing","assets/images/battle/jibing.xml","assets/images/battle/jibing.png");
+        AssetsManager.getInstance().setSparrowData("dunbing","assets/images/battle/dunbing.xml","assets/images/battle/dunbing.png");
+
         level = new Level("assets/maps/test2.tmx", "assets/maps/test2.tanim");
         add(level.backgroundGroup);
         add(level.comonBackgroundGroup);
@@ -25,9 +31,9 @@ class BattleState extends FlxState
         add(level.collisionGroup);
 
         super.create();
-        troopLeft = new Troops(1,100);
+        troopLeft = new TroopLeft(1,100);
         add(troopLeft);
-        troopRight = new Troops(2,101);
+        troopRight = new TroopRight(2,101);
         troopRight.x = 800;
         troopRight.y = 400;
         add(troopRight);
